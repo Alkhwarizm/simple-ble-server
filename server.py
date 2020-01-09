@@ -3,7 +3,7 @@
 import dbus
 
 from advertisement import Advertisement
-from gatt import Application, Service, Characteristic
+from gatt import Application, Service, Characteristic, Descriptor
 from datetime import date
 
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
@@ -29,6 +29,7 @@ class DateCharacteristic(Characteristic):
             self, DATE_CHRC_UUID,
             ["read"], service
         )
+        self.add_descriptor(DateDescriptor(self))
     
     def get_date(self):
         return str(date.today())
@@ -40,6 +41,19 @@ class DateCharacteristic(Characteristic):
             value.append(dbus.Byte(c.encode()))
 
         return value
+
+class DateDescriptor(Descriptor):
+    UUID = "2901"
+    VALUE = "Today's Date"
+
+    def __init__(self, characteristic):
+        Descriptor.__init__(self, self.UUID, ["read"], characteristic)
+
+    def ReadValue(self, options):
+        value = []
+        for c in self.VALUE:
+            value.append(dbus.Byte(c.encode()))
+        return value 
 
 app = Application()
 app.add_service(DateService(0))
