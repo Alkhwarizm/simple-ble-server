@@ -20,7 +20,7 @@ class DateAdvertisement(Advertisement):
 
 class DateService(Service):
     def __init__(self, index):
-        Service.__init__(self, index, DATE_SVC_UUID, true)
+        Service.__init__(self, index, DATE_SVC_UUID, True)
         self.add_characteristic(DateCharacteristic(self))
 
 class DateCharacteristic(Characteristic):
