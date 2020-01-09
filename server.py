@@ -4,11 +4,18 @@ import dbus
 
 from gatt import Advertisement, Application, Service, Characteristic, Descriptor
 from datetime import date
+import time
 
-GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
 DATE_SVC_UUID = "00000001-abcd-4321-89ab-a1b2c3d4e5f6"
 DATE_CHRC_UUID = "00000002-abcd-4321-89ab-a1b2c3d4e5f6"
+TIME_CHRC_UUID = "00000003-abcd-4321-89ab-a1b2c3d4e5f6"
 NOTIFY_TIMEOUT = 5000
+
+def convert_to_dbus_array(string):
+    value = []
+    for c in string:
+        value.append(dbus.Byte(c.encode()))
+    return value
 
 class DateAdvertisement(Advertisement):
     def __init__(self, index):
@@ -53,6 +60,27 @@ class DateDescriptor(Descriptor):
         for c in self.VALUE:
             value.append(dbus.Byte(c.encode()))
         return value 
+
+class TimeCharacteristic(Characteristic):
+    def __init__(self, service):
+        Characteristic.__init__(
+            self, TIME_CHRC_UUID,
+            ["read"], service
+        )
+
+    def ReadValue(self, options):
+        now = str(time.asctime())
+        return convert_to_dbus_array(now)
+
+class TimeDescriptor(Descriptor):
+    UUID = "2901"
+    VALUE = "Current Time"
+
+    def __init__(self, characteristic):
+        Descriptor.__init__(self, self.UUID, ["read"], characteristic)
+
+    def ReadValue(self, options):
+        return convert_to_dbus_array(self.VALUE)
 
 app = Application()
 app.add_service(DateService(0))
