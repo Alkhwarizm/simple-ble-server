@@ -111,7 +111,7 @@ class Advertisement(dbus.service.Object):
     def register(self):
         adapter = find_adapter(self.bus)
         
-        ad_manager = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, adapter),
+        ad_manager = dbus.Interface(self.bus.get_object(BLUEZ_SERVICE_NAME, adapter),
                                     LE_ADVERTISING_MANAGER_IFACE)
         ad_manager.RegisterAdvertisement(self.get_path(), {},
                                      reply_handler=self.register_ad_callback,
