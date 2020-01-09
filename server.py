@@ -2,8 +2,7 @@
 
 import dbus
 
-from advertisement import Advertisement
-from gatt import Application, Service, Characteristic, Descriptor
+from gatt import Advertisement, Application, Service, Characteristic, Descriptor
 from datetime import date
 
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
