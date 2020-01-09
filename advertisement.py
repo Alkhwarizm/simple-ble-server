@@ -42,7 +42,7 @@ class Advertisement(dbus.service.Object):
         self.local_name = None
         self.include_tx_power = None
         self.data = None
-        dbus.service.Object.__init__(self, bus, self.path)
+        dbus.service.Object.__init__(self, self.bus, self.path)
 
     def get_properties(self):
         properties = dict()
