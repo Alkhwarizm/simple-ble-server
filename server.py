@@ -28,6 +28,7 @@ class DateService(Service):
     def __init__(self, index):
         Service.__init__(self, index, DATE_SVC_UUID, True)
         self.add_characteristic(DateCharacteristic(self))
+        self.add_characteristic(TimeCharacteristic(self))
 
 class DateCharacteristic(Characteristic):
     def __init__(self, service):
@@ -67,6 +68,7 @@ class TimeCharacteristic(Characteristic):
             self, TIME_CHRC_UUID,
             ["read"], service
         )
+        self.add_descriptor(TimeDescriptor(self))
 
     def ReadValue(self, options):
         now = str(time.asctime())
