@@ -9,6 +9,8 @@ import time
 DATE_SVC_UUID = "00000001-abcd-4321-89ab-a1b2c3d4e5f6"
 DATE_CHRC_UUID = "00000002-abcd-4321-89ab-a1b2c3d4e5f6"
 TIME_CHRC_UUID = "00000003-abcd-4321-89ab-a1b2c3d4e5f6"
+ECHO_SVC_UUID = "00000004-abcd-4321-89ab-a1b2c3d4e5f6"
+ECHO_CHRC_UUID = "00000005-abcd-4321-89ab-a1b2c3d4e5f6"
 NOTIFY_TIMEOUT = 5000
 
 def convert_to_dbus_array(string):
@@ -84,8 +86,27 @@ class TimeDescriptor(Descriptor):
     def ReadValue(self, options):
         return convert_to_dbus_array(self.VALUE)
 
+class EchoService(Service):
+    def __init__(self, index):
+        super().__init__(index, ECHO_SVC_UUID, True)
+        self.add_characteristic(EchoCharacteristic(self))
+
+class EchoCharacteristic(Characteristic):
+    textBuff = []
+
+    def __init__(self, service):
+        super().__init__(ECHO_CHRC_UUID, ["read", "write"], service)
+
+    def ReadValue(self, options):
+        return self.textBuff
+
+    def WriteValue(self, value, options):
+        self.textBuff = value
+    
+
 app = Application()
 app.add_service(DateService(0))
+app.add_service(EchoService(1))
 app.register()
 
 adv = DateAdvertisement(0)
